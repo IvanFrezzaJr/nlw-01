@@ -1,0 +1,64 @@
+import express from 'express';
+
+const app = express();
+
+app.use(express.json());
+
+//GET: Buscar uma ou mais informações no back-end
+//POST: Criar uma nova informação no back-end
+//PUT: Atualizar uma informação no back-end
+//DELETE: Deletar uma informação no back-end
+
+//POST http://localhost:3333/users = Cria um usuario
+//GET http://localhost:3333/users = Busca todos os usuarios
+//GET http://localhost:3333/users/4 = Busca um usuario
+
+// request params: Parametros que vem na rota que identificam um recurso
+// query params: Parametros opcionais na rota
+// request body: Parametros para criação e atualização 
+
+// SELECT * FROM users WHERE name = "Ivan"
+// knex("users").where("name", "Ivan").select("*")
+
+const users =  [
+    "Ivan",
+    "Bruna",
+    "Frezza",
+    "Andelieri"
+]
+
+app.get("/users", (request, response) => {
+
+    const search = String(request.query.search);
+
+
+    const filteredUsers = search ? users.filter(user => user.includes(search)) : users;
+
+    response.json(filteredUsers);
+
+});
+
+
+app.get('/users/:id', (request, response) => {
+
+    const id = Number(request.params.id);
+
+    response.json(users[id]);
+
+});
+
+app.post("/users", (request, response) => {
+
+    const data = request.body;
+
+    console.log(data);
+
+    const user = {
+        "name": data.name,
+        "email": data.email
+    };
+
+    return response.json(user);
+});
+
+app.listen(3333);
